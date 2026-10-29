@@ -1,0 +1,19 @@
+# Personal Assistant Web — Habitus & Aurora AI (`personal-assistant-web`)
+
+> Modern responsive web application and BFF proxy built with Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, TanStack Query v5, Zustand, and React Hook Form + Zod.
+
+## System Characteristics
+- Stack: Next.js 15.1, React 19, TypeScript 5.7, Tailwind CSS 3.4, TanStack React Query v5, Zustand v5, Vitest
+- BFF Proxy Route: `src/app/api/proxy/[...path]/route.ts` forwards `/api/proxy/{auth,health,assistant,bills,incomes,wallets,financial-entries,categories,sub-categories,credit-cards}/*` to backend microservices
+- Base URL: http://localhost:3000
+
+## Key Pages & Features
+- `/login` & `/register`: JWT authentication with cookie guard (`middleware.ts`) and 1-click test credentials
+- `/` (Dashboard): Aurora Morning Briefing card, 6 quick KPI cards (Weight, BF%, Steps, Sleep, Net Balance, Pending Bills), recent workouts, quick AI prompt
+- `/workouts` & `/workouts/[id]`: Workout telemetry metrics, Banister TRIMP badge, 5 Heart Rate Zones chart, and on-demand Aurora AI workout analysis
+- `/body`: Interactive SVG anatomical silhouette (11 circumferences + 7 skinfolds + bilateral asymmetry alerts), real-time body composition modal (Jackson & Pollock, U.S. Navy, Deurenberg), full measurement CRUD, and Health Goals modal
+- `/finance`: Net balance & pending alerts, wallets overview, searchable/filterable entries table, and full Bill/Income CRUD + payment/receipt confirmation
+- `/assistant`: Conversational chat with Aurora AI featuring context selector (`ALL`, `HEALTH`, `FINANCE`), persistent Redis chat history, and Markdown rendering
+
+## Detailed Documentation
+- [Project Documentation & AI Guide](docs/PROJECT_DOCUMENTATION.md): Complete directory structure, BFF proxy routing, state management, form schemas, scientific calculations, and AI feature implementation guide.
