@@ -271,6 +271,7 @@ export interface AiMorningBriefing {
   sleepAnalysis: string;
   workoutSuggestion: string;
   financialAdvice: string;
+  routineSummary?: string;
   generatedAt: string;
 }
 
@@ -283,10 +284,365 @@ export interface AiWorkoutAnalysis {
   recommendations: string[];
 }
 
+export type AssistantContextType = "ALL" | "HEALTH" | "FINANCE" | "HABITS";
+
 export interface ChatMessage {
   id: string;
   sender: "user" | "assistant";
   content: string;
   timestamp: string;
-  contextType?: "ALL" | "HEALTH" | "FINANCE";
+  contextType?: AssistantContextType;
+}
+
+// ==========================================
+// Routines, Habits & To-Do List Models
+// ==========================================
+
+export type ScheduleType =
+  | "DAILY"
+  | "FIXED_WEEKLY"
+  | "FLEXIBLE_WEEKLY"
+  | "FIXED_MONTHLY"
+  | "FLEXIBLE_MONTHLY";
+
+export type CompletionMode =
+  | "CHECK"
+  | "QUANTITATIVE"
+  | "TODO_LINKED"
+  | "HEALTH_AUTO";
+
+export type QuotaCountMode = "DAYS_COMPLETED" | "TOTAL_EXECUTIONS";
+
+export type HealthTriggerType =
+  | "WORKOUT_SESSION"
+  | "DAILY_STEPS"
+  | "WEIGHT_OR_BODY_LOGGED";
+
+export type DayOfWeek =
+  | "MONDAY"
+  | "TUESDAY"
+  | "WEDNESDAY"
+  | "THURSDAY"
+  | "FRIDAY"
+  | "SATURDAY"
+  | "SUNDAY";
+
+export type WeekStartDay = DayOfWeek;
+
+export type HabitLogStatus = "COMPLETED" | "PARTIAL" | "PENDING" | "SKIPPED";
+
+export type HabitLogSource =
+  | "MANUAL"
+  | "TODO_LINKED"
+  | "HEALTH_AUTO"
+  | "AI_ASSISTANT";
+
+export type TodoPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+
+export type TodoStatus = "PENDING" | "COMPLETED";
+
+export interface Habit {
+  id: string;
+  userId?: string;
+  title: string;
+  description?: string | null;
+  icon: string;
+  colorHex: string;
+  scheduleType: ScheduleType;
+  daysOfWeek?: DayOfWeek[] | null;
+  daysOfMonth?: number[] | null;
+  targetCountPerPeriod: number;
+  quotaCountMode: QuotaCountMode;
+  completionMode: CompletionMode;
+  dailyTargetValue: number;
+  unit?: string | null;
+  linkedTodoCategoryId?: string | null;
+  linkedTodoCategoryName?: string | null;
+  healthTriggerType?: HealthTriggerType | null;
+  healthExerciseType?: string | null;
+  healthMinDurationMinutes?: number | null;
+  isActive: boolean;
+  startDate?: string;
+  archivedAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  currentStreak?: number;
+  bestStreak?: number;
+  streakUnit?: "DAYS" | "WEEKS" | "MONTHS" | string;
+  periodTargetCount?: number;
+  periodAchievedCount?: number;
+}
+
+export interface CreateHabitPayload {
+  title: string;
+  description?: string | null;
+  icon?: string;
+  colorHex?: string;
+  scheduleType: ScheduleType;
+  daysOfWeek?: DayOfWeek[] | null;
+  daysOfMonth?: number[] | null;
+  targetCountPerPeriod?: number;
+  quotaCountMode?: QuotaCountMode;
+  completionMode: CompletionMode;
+  dailyTargetValue?: number;
+  unit?: string | null;
+  linkedTodoCategoryId?: string | null;
+  healthTriggerType?: HealthTriggerType | null;
+  healthExerciseType?: string | null;
+  healthMinDurationMinutes?: number | null;
+}
+
+export type UpdateHabitPayload = Partial<CreateHabitPayload> & {
+  isActive?: boolean;
+};
+
+export interface CheckHabitPayload {
+  date?: string;
+  value?: number;
+  notes?: string;
+}
+
+export interface SkipHabitPayload {
+  date?: string;
+  skipCount?: number;
+  reason?: string;
+}
+
+export interface TodoCategory {
+  id: string;
+  userId?: string;
+  name: string;
+  colorHex: string;
+  icon: string;
+  isArchived?: boolean;
+  createdAt?: string;
+}
+
+export interface CreateTodoCategoryPayload {
+  name: string;
+  colorHex?: string;
+  icon?: string;
+}
+
+export interface TodoSubtask {
+  id: string;
+  todoId?: string;
+  title: string;
+  isCompleted: boolean;
+  sortOrder?: number;
+  completedAt?: string | null;
+  createdAt?: string;
+}
+
+export interface TodoItem {
+  id: string;
+  userId?: string;
+  title: string;
+  description?: string | null;
+  categoryId?: string | null;
+  categoryName?: string | null;
+  categoryColorHex?: string | null;
+  linkedHabitId?: string | null;
+  linkedHabitTitle?: string | null;
+  effectiveLinkedHabitTitles?: string[];
+  priority: TodoPriority;
+  status: TodoStatus;
+  dueDate?: string | null;
+  completedAt?: string | null;
+  subtasks?: TodoSubtask[];
+  subtasksCompleted?: number;
+  subtasksTotal?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateTodoPayload {
+  title: string;
+  description?: string | null;
+  categoryId?: string | null;
+  linkedHabitId?: string | null;
+  priority?: TodoPriority;
+  dueDate?: string | null;
+  subtasks?: Array<{ title: string } | string>;
+}
+
+export interface UpdateTodoPayload {
+  title?: string;
+  description?: string | null;
+  categoryId?: string | null;
+  linkedHabitId?: string | null;
+  priority?: TodoPriority;
+  status?: TodoStatus;
+  dueDate?: string | null;
+}
+
+export interface FixedHabitTodayItem {
+  habitId: string;
+  title: string;
+  description?: string | null;
+  icon: string;
+  colorHex: string;
+  scheduleType: ScheduleType;
+  completionMode: CompletionMode;
+  dailyTargetValue: number;
+  currentValueToday: number;
+  unit?: string | null;
+  progressPercentage: number;
+  statusToday: HabitLogStatus | "COMPLETED" | "PARTIAL" | "PENDING" | "SKIPPED";
+  isSkippedToday?: boolean;
+  skipReason?: string | null;
+  linkedTodoCategoryName?: string | null;
+  healthTriggerType?: HealthTriggerType | null;
+  currentStreak: number;
+  bestStreak: number;
+  streakUnit: "DAYS" | "WEEKS" | "MONTHS" | string;
+}
+
+export interface FlexibleHabitPeriodItem {
+  habitId: string;
+  title: string;
+  description?: string | null;
+  icon: string;
+  colorHex: string;
+  scheduleType: ScheduleType;
+  quotaCountMode?: QuotaCountMode;
+  completionMode: CompletionMode;
+  dailyTargetValue?: number;
+  unit?: string | null;
+  linkedTodoCategoryId?: string | null;
+  linkedTodoCategoryName?: string | null;
+  healthTriggerType?: HealthTriggerType | null;
+  periodLabel: string;
+  periodTargetCount: number;
+  periodAchievedCount: number;
+  periodSkippedCount?: number;
+  isPeriodGoalMet: boolean;
+  isOverachieved: boolean;
+  executedToday: boolean;
+  currentValueToday?: number;
+  currentStreak: number;
+  bestStreak: number;
+  streakUnit: "DAYS" | "WEEKS" | "MONTHS" | string;
+}
+
+export interface DailyRoutineGauge {
+  fixedExpectedCount: number;
+  fixedCompletedCount: number;
+  fixedSkippedCount: number;
+  fixedSuccessPercentage: number;
+  flexibleCompletedTodayBonus: number;
+  weeklyConsistencyPercentage?: number;
+}
+
+export interface DailyRoutineView {
+  date: string;
+  dayOfWeek: string;
+  weekWindow: {
+    startDate: string;
+    endDate: string;
+    weekStartDay: WeekStartDay;
+  };
+  dailyGauge: DailyRoutineGauge;
+  fixedHabitsToday: FixedHabitTodayItem[];
+  flexibleHabitsInPeriod: FlexibleHabitPeriodItem[];
+  urgentAndTodayTodos: TodoItem[];
+}
+
+export interface RoutineAnalyticsBarPoint {
+  label: string;
+  date: string;
+  fixedExpected: number;
+  fixedAchieved: number;
+  flexibleExecutedToday: number;
+  totalExpectedForBar: number;
+  totalAchievedForBar: number;
+  percentage: number;
+}
+
+export interface RoutineHabitBreakdownItem {
+  habitId: string;
+  title: string;
+  icon?: string;
+  colorHex?: string;
+  scheduleType: ScheduleType;
+  completionMode: CompletionMode;
+  expectedInPeriod: number;
+  achievedRawInPeriod: number;
+  achievedCappedInPeriod: number;
+  skippedInPeriod: number;
+  percentageCapped: number;
+  percentageRaw: number;
+  statusBadge: "OVERACHIEVED" | "COMPLETED" | "IN_PROGRESS" | "MISSED" | "SKIPPED" | string;
+}
+
+export interface RoutineTrendLinePoint {
+  periodLabel: string;
+  startDate: string;
+  consistencyPercentage: number;
+}
+
+export interface RoutineAnalyticsComparison {
+  periodType: "WEEK" | "MONTH";
+  startDate: string;
+  endDate: string;
+  weekStartDay: WeekStartDay;
+  overallMetrics: {
+    totalExpected: number;
+    totalAchievedCapped: number;
+    totalAchievedRaw: number;
+    totalSkipped: number;
+    consistencyPercentage: number;
+    overachievementCount: number;
+  };
+  barChartSeries: RoutineAnalyticsBarPoint[];
+  habitBreakdown: RoutineHabitBreakdownItem[];
+  trendLineSeries: RoutineTrendLinePoint[];
+}
+
+export interface HabitHeatmapDay {
+  date: string;
+  completedCount: number;
+  expectedCount: number;
+  percentage: number;
+  intensity: number; // 0..4
+}
+
+export interface HabitHeatmapData {
+  months: number;
+  habitId?: string | null;
+  habitTitle?: string | null;
+  startDate: string;
+  endDate: string;
+  totalCompletedDays?: number;
+  currentStreak?: number;
+  bestStreak?: number;
+  days: HabitHeatmapDay[];
+}
+
+export interface RoutineSummary {
+  date: string;
+  fixedExpectedToday: number;
+  fixedCompletedToday: number;
+  fixedSkippedToday?: number;
+  fixedSuccessPercentageToday: number;
+  flexibleCompletedTodayBonus?: number;
+  flexibleHabitsInPeriodCount?: number;
+  flexibleHabitsCompletedInPeriodCount?: number;
+  weeklyConsistencyPercentage: number;
+  pendingTodosTodayCount: number;
+  overdueTodosCount?: number;
+  urgentTodosCount?: number;
+  topStreakHabitTitle?: string | null;
+  topStreakCount?: number;
+  pendingFixedHabitTitles?: string[];
+  urgentTodoTitles?: string[];
+}
+
+export interface UserRoutineSettings {
+  userId?: string;
+  weekStartDay: WeekStartDay;
+  timezone: string;
+  eveningReminderEnabled: boolean;
+  eveningReminderTime: string;
+  updatedAt?: string;
 }

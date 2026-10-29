@@ -16,7 +16,7 @@ export default function AssistantPage() {
             Aurora Personal Assistant
           </h2>
           <p className="text-sm text-muted-foreground">
-            Inteligência contextual com acesso aos seus treinos, métricas corporais e lançamentos financeiros.
+            Inteligência contextual com acesso aos seus hábitos, tarefas, treinos, métricas corporais e lançamentos financeiros.
           </p>
         </div>
       </div>

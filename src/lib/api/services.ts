@@ -19,6 +19,7 @@ import {
   AiWorkoutAnalysis,
   ChatMessage,
   HealthGoals,
+  AssistantContextType,
 } from "@/types";
 
 // ==========================================
@@ -308,7 +309,7 @@ export const assistantService = {
 
   async sendMessage(
     prompt: string,
-    contextType: "ALL" | "HEALTH" | "FINANCE" = "ALL"
+    contextType: AssistantContextType = "ALL"
   ): Promise<string> {
     const { data } = await apiClient.post<{ reply: string }>(
       "/api/proxy/assistant/chat",

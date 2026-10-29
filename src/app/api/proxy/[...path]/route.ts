@@ -9,6 +9,7 @@ function getDestinationUrl(pathSegments: string[], req: NextRequest): string {
   const healthBase = process.env.HEALTH_SERVICE_URL || (baseDomain ? `${baseDomain}/health` : "http://localhost:8081");
   const financeBase = process.env.FINANCIAL_SERVICE_URL || (baseDomain ? `${baseDomain}/finance` : "http://localhost:8080");
   const botBase = process.env.BOT_GATEWAY_URL || (baseDomain ? `${baseDomain}/bot` : "http://localhost:8081");
+  const habitBase = process.env.HABIT_SERVICE_URL || (baseDomain ? `${baseDomain}/habits` : "http://localhost:8083");
 
   let targetUrl: string;
 
@@ -18,6 +19,8 @@ function getDestinationUrl(pathSegments: string[], req: NextRequest): string {
     targetUrl = `${healthBase}/api/health/${rest}`;
   } else if (["financial-entries", "bills", "incomes", "wallets", "categories", "sub-categories", "credit-cards"].includes(service)) {
     targetUrl = `${financeBase}/api/${service}${rest ? `/${rest}` : ""}`;
+  } else if (["habits", "todos", "todo-categories", "routines"].includes(service)) {
+    targetUrl = `${habitBase}/api/${service}${rest ? `/${rest}` : ""}`;
   } else if (service === "assistant") {
     targetUrl = `${botBase}/api/assistant/${rest}`;
   } else {
@@ -52,7 +55,7 @@ async function proxyRequest(
       body,
     });
 
-    const data = await response.arrayBuffer();
+    const data = response.status === 204 ? null : await response.arrayBuffer();
     const resHeaders = new Headers();
     response.headers.forEach((val, key) => {
       const lowerKey = key.toLowerCase();

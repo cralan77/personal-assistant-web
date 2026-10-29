@@ -7,6 +7,7 @@ import {
   Activity,
   Dumbbell,
   Wallet,
+  CalendarCheck,
   Sparkles,
   LogOut,
   User as UserIcon,
@@ -19,6 +20,11 @@ const navigationItems = [
     name: "Dashboard",
     href: "/",
     icon: LayoutDashboard,
+  },
+  {
+    name: "Rotina & Hábitos",
+    href: "/routines",
+    icon: CalendarCheck,
   },
   {
     name: "Treinos & Cardio",

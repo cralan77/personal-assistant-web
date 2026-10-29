@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Sparkles, User as UserIcon, Bot, Dumbbell, Wallet, RotateCcw } from "lucide-react";
+import { Send, Sparkles, User as UserIcon, Bot, Dumbbell, Wallet, RotateCcw, CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChatMessage } from "@/types";
+import { AssistantContextType, ChatMessage } from "@/types";
 import { assistantService } from "@/lib/api/services";
 import { MarkdownMessage } from "./MarkdownMessage";
 
@@ -14,12 +14,12 @@ export function ChatWindow() {
       id: "msg-welcome",
       sender: "assistant",
       content:
-        "Olá! Sou a Aurora, sua assistente pessoal integrada no Habitus. Posso te orientar sobre recuperação e zonas de frequência cardíaca dos seus treinos, evolução da sua composição corporal e planejamento das suas finanças. Como posso te ajudar hoje?",
+        "Olá! Sou a Aurora, sua assistente pessoal integrada no Habitus. Posso te orientar sobre seus hábitos e tarefas da To-Do List, recuperação e zonas cardíacas dos seus treinos, evolução corporal e planejamento das suas finanças. Como posso te ajudar hoje?",
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     },
   ]);
   const [inputText, setInputText] = useState("");
-  const [contextType, setContextType] = useState<"ALL" | "HEALTH" | "FINANCE">("ALL");
+  const [contextType, setContextType] = useState<AssistantContextType>("ALL");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -114,11 +114,11 @@ export function ChatWindow() {
     ]);
   };
 
-  const quickPrompts = [
-    { text: "Como estão minhas medidas corporais?", icon: Dumbbell, ctx: "HEALTH" as const },
-    { text: "Como está minha prontidão de treino hoje?", icon: Dumbbell, ctx: "HEALTH" as const },
-    { text: "Qual a previsão das contas e despesas deste mês?", icon: Wallet, ctx: "FINANCE" as const },
-    { text: "Me dê um resumo integrado de saúde e finanças.", icon: Sparkles, ctx: "ALL" as const },
+  const quickPrompts: Array<{ text: string; icon: any; ctx: AssistantContextType }> = [
+    { text: "Como estão meus hábitos e tarefas pendentes de hoje?", icon: CalendarCheck, ctx: "HABITS" },
+    { text: "Como estão minhas medidas corporais?", icon: Dumbbell, ctx: "HEALTH" },
+    { text: "Qual a previsão das contas e despesas deste mês?", icon: Wallet, ctx: "FINANCE" },
+    { text: "Me dê um resumo integrado de rotina, saúde e finanças.", icon: Sparkles, ctx: "ALL" },
   ];
 
   return (
@@ -137,7 +137,7 @@ export function ChatWindow() {
               </span>
             </h3>
             <p className="text-xs text-muted-foreground">
-              Inteligência integrada aos seus treinos e finanças
+              Inteligência integrada à sua rotina, treinos e finanças
             </p>
           </div>
         </div>
@@ -156,7 +156,7 @@ export function ChatWindow() {
           </Button>
 
           {/* Context Tabs Selector */}
-          <div className="flex items-center space-x-1 rounded-xl bg-background p-1 border border-border">
+          <div className="flex items-center space-x-1 rounded-xl bg-background p-1 border border-border flex-wrap">
             <button
               onClick={() => setContextType("ALL")}
               className={`rounded-lg px-3 py-1 text-xs font-medium transition-all ${
@@ -166,6 +166,16 @@ export function ChatWindow() {
               }`}
             >
               Todos
+            </button>
+            <button
+              onClick={() => setContextType("HABITS")}
+              className={`rounded-lg px-3 py-1 text-xs font-medium transition-all ${
+                contextType === "HABITS"
+                  ? "bg-indigo-600 text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Rotina & Hábitos
             </button>
             <button
               onClick={() => setContextType("HEALTH")}
@@ -291,11 +301,13 @@ export function ChatWindow() {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={`Pergunte ao assistente sobre ${
-              contextType === "HEALTH"
+              contextType === "HABITS"
+                ? "hábitos, rotinas e tarefas da To-Do List..."
+                : contextType === "HEALTH"
                 ? "treinos, batimentos e medidas..."
                 : contextType === "FINANCE"
                 ? "contas a pagar, saldo e despesas..."
-                : "saúde ou finanças..."
+                : "rotina, saúde ou finanças..."
             }`}
             className="flex-1 h-11"
             disabled={isTyping}
