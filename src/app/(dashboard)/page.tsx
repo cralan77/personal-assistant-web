@@ -17,6 +17,8 @@ import {
   CheckCircle2,
   ListTodo,
   Flame,
+  Apple,
+  Droplets,
 } from "lucide-react";
 import { MorningBriefingCard } from "@/components/home/MorningBriefingCard";
 import { MetricQuickCard } from "@/components/home/MetricQuickCard";
@@ -88,6 +90,12 @@ export default function HomePage() {
             <Button variant="outline" size="sm" className="h-9 text-xs">
               <CalendarCheck className="mr-1.5 h-3.5 w-3.5 text-health-primary" />
               Rotina & To-Dos
+            </Button>
+          </Link>
+          <Link href="/nutrition">
+            <Button variant="outline" size="sm" className="h-9 text-xs">
+              <Apple className="mr-1.5 h-3.5 w-3.5 text-orange-500" />
+              Nutrição & Macros
             </Button>
           </Link>
           <Link href="/body">
@@ -328,6 +336,89 @@ export default function HomePage() {
                   className="w-full text-xs h-9 border-health-primary/40 text-health-primary hover:bg-health-primary hover:text-white transition-colors"
                 >
                   Gerenciar Rotina & To-Do List
+                  <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Card de Nutrição & Hidratação do Dia */}
+          <Card className="border-border shadow-sm overflow-hidden bg-gradient-to-br from-card to-orange-500/5">
+            <CardHeader className="pb-3 border-b border-border/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Apple className="h-5 w-5 text-orange-500" />
+                  <CardTitle className="text-base font-semibold">
+                    Nutrição & Hidratação Hoje
+                  </CardTitle>
+                </div>
+                <Badge variant="outline" className="text-[11px] text-orange-500 border-orange-500/30">
+                  {Math.round(healthSummary?.todayNutrition?.caloriesConsumed ?? 0)} kcal
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 space-y-3.5">
+              {/* Calorias */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground flex items-center gap-1.5">
+                    <Flame className="h-3.5 w-3.5 text-orange-500" />
+                    Calorias Consumidas
+                  </span>
+                  <span className="font-bold text-foreground">
+                    {Math.round(healthSummary?.todayNutrition?.caloriesConsumed ?? 0)} /{" "}
+                    {healthSummary?.todayNutrition?.targetCalories ?? 2000} kcal
+                  </span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-orange-500 transition-all duration-500"
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        ((healthSummary?.todayNutrition?.caloriesConsumed ?? 0) /
+                          (healthSummary?.todayNutrition?.targetCalories ?? 2000)) *
+                          100
+                      )}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Água e Proteína */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div className="rounded-xl border border-border/60 bg-background/60 p-2.5">
+                  <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                    <Droplets className="h-3 w-3 text-sky-500" />
+                    Água Ingerida
+                  </span>
+                  <span className="text-sm font-bold text-sky-500">
+                    {((healthSummary?.todayNutrition?.waterConsumedMl ?? 0) / 1000).toFixed(2)} L
+                  </span>
+                  <span className="text-[10px] text-muted-foreground block">
+                    Meta: {((healthSummary?.todayNutrition?.targetWaterMl ?? 2500) / 1000).toFixed(1)} L
+                  </span>
+                </div>
+
+                <div className="rounded-xl border border-border/60 bg-background/60 p-2.5">
+                  <span className="text-[11px] text-muted-foreground block">
+                    Proteína do Dia
+                  </span>
+                  <span className="text-sm font-bold text-rose-500">
+                    {(healthSummary?.todayNutrition?.proteinConsumedG ?? 0).toFixed(1)} g
+                  </span>
+                  <span className="text-[10px] text-muted-foreground block">
+                    Meta: {healthSummary?.todayNutrition?.targetProteinG ?? 150} g
+                  </span>
+                </div>
+              </div>
+
+              <Link href="/nutrition" className="block pt-1">
+                <Button
+                  variant="outline"
+                  className="w-full text-xs h-9 border-orange-500/40 text-orange-500 hover:bg-orange-500 hover:text-white transition-colors"
+                >
+                  Abrir Diário de Nutrição
                   <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
               </Link>

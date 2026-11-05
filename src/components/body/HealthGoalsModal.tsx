@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Target, Scale, Percent, Footprints, Moon } from "lucide-react";
+import { Target, Scale, Percent, Footprints, Moon, Flame, Beef, Wheat, Droplet, Droplets } from "lucide-react";
 import { HealthGoals } from "@/types";
 import { healthService } from "@/lib/api/services";
 
@@ -30,6 +30,11 @@ interface FormValues {
   targetBodyFatPercentage?: number;
   targetStepsPerDay?: number;
   targetSleepMinutes?: number;
+  targetCalories?: number;
+  targetProteinG?: number;
+  targetCarbsG?: number;
+  targetFatG?: number;
+  targetWaterMl?: number;
 }
 
 export function HealthGoalsModal({
@@ -48,6 +53,11 @@ export function HealthGoalsModal({
       targetBodyFatPercentage: initialGoals?.targetBodyFatPercentage ?? undefined,
       targetStepsPerDay: initialGoals?.targetStepsPerDay ?? 10000,
       targetSleepMinutes: initialGoals?.targetSleepMinutes ?? 480,
+      targetCalories: initialGoals?.targetCalories ?? 2000,
+      targetProteinG: initialGoals?.targetProteinG ?? 150,
+      targetCarbsG: initialGoals?.targetCarbsG ?? 200,
+      targetFatG: initialGoals?.targetFatG ?? 60,
+      targetWaterMl: initialGoals?.targetWaterMl ?? 2500,
     },
   });
 
@@ -59,6 +69,11 @@ export function HealthGoalsModal({
           targetBodyFatPercentage: initialGoals.targetBodyFatPercentage ?? undefined,
           targetStepsPerDay: initialGoals.targetStepsPerDay ?? 10000,
           targetSleepMinutes: initialGoals.targetSleepMinutes ?? 480,
+          targetCalories: initialGoals.targetCalories ?? 2000,
+          targetProteinG: initialGoals.targetProteinG ?? 150,
+          targetCarbsG: initialGoals.targetCarbsG ?? 200,
+          targetFatG: initialGoals.targetFatG ?? 60,
+          targetWaterMl: initialGoals.targetWaterMl ?? 2500,
         });
       } else {
         // Fetch current goals from backend if not passed
@@ -70,6 +85,11 @@ export function HealthGoalsModal({
               targetBodyFatPercentage: goals.targetBodyFatPercentage ?? undefined,
               targetStepsPerDay: goals.targetStepsPerDay ?? 10000,
               targetSleepMinutes: goals.targetSleepMinutes ?? 480,
+              targetCalories: goals.targetCalories ?? 2000,
+              targetProteinG: goals.targetProteinG ?? 150,
+              targetCarbsG: goals.targetCarbsG ?? 200,
+              targetFatG: goals.targetFatG ?? 60,
+              targetWaterMl: goals.targetWaterMl ?? 2500,
             });
           })
           .catch((err) => {
@@ -107,6 +127,21 @@ export function HealthGoalsModal({
         targetSleepMinutes: values.targetSleepMinutes
           ? Number(values.targetSleepMinutes)
           : 480,
+        targetCalories: values.targetCalories
+          ? Number(values.targetCalories)
+          : null,
+        targetProteinG: values.targetProteinG
+          ? Number(values.targetProteinG)
+          : null,
+        targetCarbsG: values.targetCarbsG
+          ? Number(values.targetCarbsG)
+          : null,
+        targetFatG: values.targetFatG
+          ? Number(values.targetFatG)
+          : null,
+        targetWaterMl: values.targetWaterMl
+          ? Number(values.targetWaterMl)
+          : 2500,
       };
 
       const saved = await healthService.saveGoals(payload);
@@ -253,6 +288,86 @@ export function HealthGoalsModal({
               {...register("targetSleepMinutes")}
               className="h-9 text-xs"
             />
+          </div>
+        </div>
+
+        {/* Metas Nutricionais & Hidratação */}
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3.5 shadow-sm">
+          <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+            <Flame className="h-4 w-4 text-orange-500" />
+            Metas de Nutrição & Hidratação
+          </Label>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
+            <div>
+              <Label htmlFor="targetCalories" className="text-[11px] text-muted-foreground flex items-center gap-1">
+                Calorias (kcal)
+              </Label>
+              <Input
+                id="targetCalories"
+                type="number"
+                placeholder="2000"
+                {...register("targetCalories")}
+                className="h-8 text-xs mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="targetProteinG" className="text-[11px] text-muted-foreground flex items-center gap-1">
+                <Beef className="h-3 w-3 text-rose-500" />
+                Proteína (g)
+              </Label>
+              <Input
+                id="targetProteinG"
+                type="number"
+                placeholder="150"
+                {...register("targetProteinG")}
+                className="h-8 text-xs mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="targetCarbsG" className="text-[11px] text-muted-foreground flex items-center gap-1">
+                <Wheat className="h-3 w-3 text-sky-500" />
+                Carboidratos (g)
+              </Label>
+              <Input
+                id="targetCarbsG"
+                type="number"
+                placeholder="200"
+                {...register("targetCarbsG")}
+                className="h-8 text-xs mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="targetFatG" className="text-[11px] text-muted-foreground flex items-center gap-1">
+                <Droplet className="h-3 w-3 text-yellow-500" />
+                Gorduras (g)
+              </Label>
+              <Input
+                id="targetFatG"
+                type="number"
+                placeholder="60"
+                {...register("targetFatG")}
+                className="h-8 text-xs mt-1"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <Label htmlFor="targetWaterMl" className="text-[11px] text-muted-foreground flex items-center gap-1">
+                <Droplets className="h-3 w-3 text-blue-500" />
+                Meta de Água (ml)
+              </Label>
+              <Input
+                id="targetWaterMl"
+                type="number"
+                step="100"
+                placeholder="2500"
+                {...register("targetWaterMl")}
+                className="h-8 text-xs mt-1"
+              />
+            </div>
           </div>
         </div>
 

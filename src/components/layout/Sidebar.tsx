@@ -11,6 +11,7 @@ import {
   Sparkles,
   LogOut,
   User as UserIcon,
+  Apple,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/use-auth-store";
@@ -35,6 +36,11 @@ const navigationItems = [
     name: "Composição Corporal",
     href: "/body",
     icon: Activity,
+  },
+  {
+    name: "Nutrição & Macros",
+    href: "/nutrition",
+    icon: Apple,
   },
   {
     name: "Finanças",

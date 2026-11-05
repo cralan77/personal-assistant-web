@@ -92,7 +92,24 @@ export interface HealthGoals {
   targetBodyFatPercentage?: number | null;
   targetStepsPerDay?: number | null;
   targetSleepMinutes?: number | null;
+  targetCalories?: number | null;
+  targetProteinG?: number | null;
+  targetCarbsG?: number | null;
+  targetFatG?: number | null;
+  targetFiberG?: number | null;
+  targetWaterMl?: number | null;
   updatedAt?: string;
+}
+
+export interface TodayNutritionSummary {
+  caloriesConsumed: number;
+  targetCalories?: number | null;
+  proteinConsumedG: number;
+  targetProteinG?: number | null;
+  carbsConsumedG: number;
+  fatConsumedG: number;
+  waterConsumedMl: number;
+  targetWaterMl: number;
 }
 
 export interface BodyCompositionSummary {
@@ -110,6 +127,157 @@ export interface BodyCompositionSummary {
   todaySteps: number;
   lastNightSleepMinutes?: number | null;
   totalEvaluationsCount: number;
+  todayNutrition?: TodayNutritionSummary | null;
+}
+
+// ==========================================
+// Nutrition & Hydration Models
+// ==========================================
+
+export type MealType = "BREAKFAST" | "LUNCH" | "DINNER" | "SNACK" | "SUPPER";
+
+export interface FoodItem {
+  id: string;
+  userId: string;
+  name: string;
+  brand?: string | null;
+  servingSizeGrams: number;
+  servingUnitName: string;
+  calories: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+  fiberG: number;
+  isFavorite: boolean;
+  createdAt?: string;
+}
+
+export interface CreateFoodPayload {
+  name: string;
+  brand?: string | null;
+  servingSizeGrams?: number;
+  servingUnitName?: string;
+  calories: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+  fiberG?: number;
+  isFavorite?: boolean;
+}
+
+export interface MealItem {
+  id: string;
+  mealId?: string | null;
+  foodId?: string | null;
+  foodName: string;
+  quantity: number;
+  unit: string;
+  calories: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+  fiberG: number;
+}
+
+export interface CreateMealItemPayload {
+  foodId?: string | null;
+  foodName: string;
+  quantity: number;
+  unit?: string;
+  calories?: number | null;
+  proteinG?: number | null;
+  carbsG?: number | null;
+  fatG?: number | null;
+  fiberG?: number | null;
+}
+
+export interface Meal {
+  id: string;
+  userId: string;
+  dateLocal: string;
+  timeLocal?: string | null;
+  mealType: MealType;
+  name?: string | null;
+  totalCalories: number;
+  totalProteinG: number;
+  totalCarbsG: number;
+  totalFatG: number;
+  totalFiberG: number;
+  totalNetCarbsG: number;
+  isQuickLog: boolean;
+  notes?: string | null;
+  items: MealItem[];
+  createdAt: string;
+}
+
+export interface CreateMealPayload {
+  dateLocal: string;
+  timeLocal?: string | null;
+  mealType: MealType;
+  name?: string | null;
+  items?: CreateMealItemPayload[];
+  quickCalories?: number | null;
+  quickProteinG?: number | null;
+  quickCarbsG?: number | null;
+  quickFatG?: number | null;
+  quickFiberG?: number | null;
+  notes?: string | null;
+}
+
+export interface WaterLog {
+  id: string;
+  userId: string;
+  dateLocal: string;
+  amountMl: number;
+  loggedAt: string;
+}
+
+export interface MacroNutrientSummary {
+  calories: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+  fiberG: number;
+  netCarbsG: number;
+  proteinCaloriesPercent: number;
+  carbsCaloriesPercent: number;
+  fatCaloriesPercent: number;
+}
+
+export interface NutritionGoalsProgress {
+  targetCalories?: number | null;
+  targetProteinG?: number | null;
+  targetCarbsG?: number | null;
+  targetFatG?: number | null;
+  targetFiberG?: number | null;
+  calorieAdherencePercent?: number | null;
+  proteinAdherencePercent?: number | null;
+  carbsAdherencePercent?: number | null;
+  fatAdherencePercent?: number | null;
+}
+
+export interface WaterProgress {
+  totalConsumedMl: number;
+  targetMl: number;
+  adherencePercent: number;
+}
+
+export interface EnergyBalanceSummary {
+  caloriesConsumed: number;
+  bmrKatchMcArdle?: number | null;
+  workoutCaloriesBurned: number;
+  totalEnergyExpenditure: number;
+  netCaloricBalance: number;
+  status: "CALORIC_DEFICIT" | "CALORIC_SURPLUS" | "BALANCED" | string;
+}
+
+export interface DailyNutritionResponse {
+  date: string;
+  meals: Meal[];
+  totals: MacroNutrientSummary;
+  goals?: NutritionGoalsProgress | null;
+  water: WaterProgress;
+  energyBalance?: EnergyBalanceSummary | null;
 }
 
 export type ExertionLevel = "LIGHT" | "MODERATE" | "HARD" | "VERY_HARD";

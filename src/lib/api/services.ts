@@ -20,6 +20,12 @@ import {
   ChatMessage,
   HealthGoals,
   AssistantContextType,
+  DailyNutritionResponse,
+  Meal,
+  CreateMealPayload,
+  WaterLog,
+  FoodItem,
+  CreateFoodPayload,
 } from "@/types";
 
 // ==========================================
@@ -114,6 +120,58 @@ export const healthService = {
       payload
     );
     return data;
+  },
+
+  // --- Nutrition & Daily Macros ---
+  async getDailyNutrition(date?: string): Promise<DailyNutritionResponse> {
+    const url = date
+      ? `/api/proxy/health/nutrition/daily?date=${date}`
+      : "/api/proxy/health/nutrition/daily";
+    const { data } = await apiClient.get<DailyNutritionResponse>(url);
+    return data;
+  },
+
+  async logMeal(payload: CreateMealPayload): Promise<Meal> {
+    const { data } = await apiClient.post<Meal>(
+      "/api/proxy/health/nutrition/meals",
+      payload
+    );
+    return data;
+  },
+
+  async deleteMeal(id: string): Promise<void> {
+    await apiClient.delete(`/api/proxy/health/nutrition/meals/${id}`);
+  },
+
+  async logWater(dateLocal: string, amountMl: number): Promise<WaterLog> {
+    const { data } = await apiClient.post<WaterLog>(
+      "/api/proxy/health/nutrition/water",
+      { dateLocal, amountMl }
+    );
+    return data;
+  },
+
+  async deleteWater(id: string): Promise<void> {
+    await apiClient.delete(`/api/proxy/health/nutrition/water/${id}`);
+  },
+
+  async searchFoods(query: string = "", limit: number = 30): Promise<FoodItem[]> {
+    const { data } = await apiClient.get<FoodItem[]>(
+      `/api/proxy/health/nutrition/foods?query=${encodeURIComponent(query)}&limit=${limit}`
+    );
+    return data || [];
+  },
+
+  async createFood(payload: CreateFoodPayload): Promise<FoodItem> {
+    const { data } = await apiClient.post<FoodItem>(
+      "/api/proxy/health/nutrition/foods",
+      payload
+    );
+    return data;
+  },
+
+  async deleteFood(id: string): Promise<void> {
+    await apiClient.delete(`/api/proxy/health/nutrition/foods/${id}`);
   },
 };
 
