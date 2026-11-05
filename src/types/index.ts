@@ -128,6 +128,23 @@ export interface BodyCompositionSummary {
   lastNightSleepMinutes?: number | null;
   totalEvaluationsCount: number;
   todayNutrition?: TodayNutritionSummary | null;
+  readinessScore?: number | null;
+  readinessStatus?: string | null;
+  weeklyTrimp?: number | null;
+  trainingLoadStatus?: string | null;
+  recentSleepFormatted?: string | null;
+  lastWorkoutSummary?: string | null;
+}
+
+export interface HealthMetricsSummary {
+  readinessScore: number;
+  readinessStatus: string;
+  weeklyTrimp: number;
+  trainingLoadStatus: string;
+  recentSleepMinutes?: number | null;
+  recentSleepFormatted: string;
+  todaySteps: number;
+  lastWorkoutSummary?: string | null;
 }
 
 // ==========================================

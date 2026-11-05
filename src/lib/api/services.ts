@@ -2,6 +2,7 @@ import { apiClient } from "./client";
 import {
   AuthResponse,
   BodyCompositionSummary,
+  HealthMetricsSummary,
   BodyMeasurementEntry,
   CreateBillPayload,
   CreateIncomePayload,
@@ -63,6 +64,13 @@ export const healthService = {
   async getSummary(): Promise<BodyCompositionSummary> {
     const { data } = await apiClient.get<BodyCompositionSummary>(
       "/api/proxy/health/summary"
+    );
+    return data;
+  },
+
+  async getMetrics(): Promise<HealthMetricsSummary> {
+    const { data } = await apiClient.get<HealthMetricsSummary>(
+      "/api/proxy/health/metrics"
     );
     return data;
   },

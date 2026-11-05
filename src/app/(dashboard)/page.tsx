@@ -53,6 +53,11 @@ export default function HomePage() {
     queryFn: () => healthService.getSummary(),
   });
 
+  const { data: healthMetrics } = useQuery({
+    queryKey: ["health-metrics"],
+    queryFn: () => healthService.getMetrics(),
+  });
+
   const { data: workouts = [] } = useQuery({
     queryKey: ["recent-workouts"],
     queryFn: () => healthService.listWorkouts(),
@@ -125,6 +130,10 @@ export default function HomePage() {
       {/* Morning Briefing Banner */}
       <MorningBriefingCard
         briefing={briefing}
+        healthSummary={healthSummary}
+        healthMetrics={healthMetrics}
+        financeSummary={financeSummary}
+        routineSummary={routineSummary}
         isLoading={briefingLoading}
         onRefresh={() => refetchBriefing()}
       />
