@@ -97,7 +97,7 @@ export function TodoModal({
       setTitle("");
       setDescription("");
       setPriority("MEDIUM");
-      setDueDate(getLocalDateIso());
+      setDueDate("");
       setCategoryId("");
       setLinkedHabitId("");
       setExistingSubtasks([]);
@@ -201,7 +201,7 @@ export function TodoModal({
             title: title.trim(),
             description: description.trim() || null,
             priority,
-            dueDate: dueDate || null,
+            dueDate: dueDate.trim() ? dueDate.trim() : null,
             categoryId: categoryId || null,
             linkedHabitId: linkedHabitId || null,
           },
@@ -211,7 +211,7 @@ export function TodoModal({
           title: title.trim(),
           description: description.trim() || null,
           priority,
-          dueDate: dueDate || null,
+          dueDate: dueDate.trim() ? dueDate.trim() : null,
           categoryId: categoryId || null,
           linkedHabitId: linkedHabitId || null,
           subtasks: draftSubtasks.map((t) => ({ title: t })),
@@ -289,7 +289,26 @@ export function TodoModal({
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="todo-due">Data de Vencimento</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="todo-due">Vencimento (Opcional)</Label>
+                {dueDate ? (
+                  <button
+                    type="button"
+                    onClick={() => setDueDate("")}
+                    className="text-[11px] text-muted-foreground hover:text-foreground hover:underline"
+                  >
+                    Remover data
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setDueDate(getLocalDateIso())}
+                    className="text-[11px] text-health-primary hover:underline"
+                  >
+                    Definir hoje
+                  </button>
+                )}
+              </div>
               <Input
                 id="todo-due"
                 type="date"
