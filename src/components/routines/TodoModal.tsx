@@ -27,6 +27,7 @@ import {
   useToggleSubtask,
   useUpdateTodo,
 } from "@/lib/hooks/use-routines";
+import { getLocalDateIso } from "@/lib/utils";
 import {
   AlertCircle,
   CheckSquare,
@@ -96,7 +97,7 @@ export function TodoModal({
       setTitle("");
       setDescription("");
       setPriority("MEDIUM");
-      setDueDate(new Date().toISOString().split("T")[0]);
+      setDueDate(getLocalDateIso());
       setCategoryId("");
       setLinkedHabitId("");
       setExistingSubtasks([]);

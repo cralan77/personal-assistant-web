@@ -30,7 +30,7 @@ import {
   financeService,
 } from "@/lib/api/services";
 import { getRoutineSummary } from "@/lib/api/routines";
-import { formatCurrencyBRL } from "@/lib/utils";
+import { formatCurrencyBRL, getLocalDateIso } from "@/lib/utils";
 import { useAuthStore } from "@/store/use-auth-store";
 
 export default function HomePage() {
@@ -61,9 +61,10 @@ export default function HomePage() {
     queryFn: () => financeService.getSummary(),
   });
 
+  const todayIso = getLocalDateIso();
   const { data: routineSummary } = useQuery({
-    queryKey: ["routines", "summary"],
-    queryFn: () => getRoutineSummary(),
+    queryKey: ["routines", "summary", todayIso],
+    queryFn: () => getRoutineSummary(todayIso),
   });
 
   const recentWorkouts = workouts.slice(0, 3);

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { financeService } from "@/lib/api/services";
 import { EntryType, FinancialEntry } from "@/types";
+import { getLocalDateIso } from "@/lib/utils";
 import { AlertCircle } from "lucide-react";
 
 interface NewEntryModalProps {
@@ -58,7 +59,7 @@ export function NewEntryModal({
       type: "BILL",
       name: "",
       value: 0,
-      dueDate: new Date().toISOString().split("T")[0],
+      dueDate: getLocalDateIso(),
     },
   });
 

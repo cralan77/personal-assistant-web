@@ -71,7 +71,7 @@ import {
   TodoPriority,
   TodoStatus,
 } from "@/types";
-import { formatDateBR } from "@/lib/utils";
+import { formatDateBR, getLocalDateIso } from "@/lib/utils";
 
 const PRIORITY_BADGE: Record<
   TodoPriority,
@@ -115,7 +115,7 @@ function shiftDateIso(isoDate: string, deltaDays: number): string {
 }
 
 export default function RoutinesPage() {
-  const todayIso = useMemo(() => new Date().toISOString().split("T")[0], []);
+  const todayIso = useMemo(() => getLocalDateIso(), []);
   const [activeTab, setActiveTab] = useState<string>("today");
 
   // Date & Period States

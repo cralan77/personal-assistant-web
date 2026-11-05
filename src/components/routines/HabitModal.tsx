@@ -26,6 +26,7 @@ import {
   useCreateTodoCategory,
   useUpdateHabit,
 } from "@/lib/hooks/use-routines";
+import { getLocalDateIso } from "@/lib/utils";
 import { AlertCircle, Plus } from "lucide-react";
 
 interface HabitModalProps {
@@ -253,6 +254,7 @@ export function HabitModal({
         healthTriggerType === "WORKOUT_SESSION"
           ? Number(healthMinDurationMinutes)
           : null,
+      startDate: initialHabit ? initialHabit.startDate : getLocalDateIso(),
     };
 
     try {

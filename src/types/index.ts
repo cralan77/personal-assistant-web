@@ -390,6 +390,7 @@ export interface CreateHabitPayload {
   healthTriggerType?: HealthTriggerType | null;
   healthExerciseType?: string | null;
   healthMinDurationMinutes?: number | null;
+  startDate?: string | null;
 }
 
 export type UpdateHabitPayload = Partial<CreateHabitPayload> & {

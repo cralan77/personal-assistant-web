@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getLocalDateIso } from "@/lib/utils";
 import {
   addSubtask,
   archiveHabit,
@@ -69,7 +70,7 @@ export function useTodos(filters?: GetTodosFilter) {
 }
 
 export function useDailyRoutine(date?: string) {
-  const targetDate = date || new Date().toISOString().split("T")[0];
+  const targetDate = date || getLocalDateIso();
   return useQuery({
     queryKey: ["routines", "daily", targetDate],
     queryFn: () => getDailyRoutine(targetDate),
@@ -80,7 +81,7 @@ export function useAnalyticsComparison(
   period: "WEEK" | "MONTH" = "WEEK",
   referenceDate?: string
 ) {
-  const targetDate = referenceDate || new Date().toISOString().split("T")[0];
+  const targetDate = referenceDate || getLocalDateIso();
   return useQuery({
     queryKey: ["routines", "analytics", "comparison", period, targetDate],
     queryFn: () => getAnalyticsComparison(period, targetDate),
@@ -94,10 +95,11 @@ export function useHabitHeatmap(months: number = 3, habitId?: string) {
   });
 }
 
-export function useRoutineSummary() {
+export function useRoutineSummary(date?: string) {
+  const targetDate = date || getLocalDateIso();
   return useQuery({
-    queryKey: ["routines", "summary"],
-    queryFn: () => getRoutineSummary(),
+    queryKey: ["routines", "summary", targetDate],
+    queryFn: () => getRoutineSummary(targetDate),
   });
 }
 

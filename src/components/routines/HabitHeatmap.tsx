@@ -5,7 +5,7 @@ import { Habit, HabitHeatmapData, HabitHeatmapDay } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarDays, Flame } from "lucide-react";
-import { formatDateBR } from "@/lib/utils";
+import { formatDateBR, getLocalDateIso } from "@/lib/utils";
 
 interface HabitHeatmapProps {
   heatmap?: HabitHeatmapData;
@@ -56,7 +56,7 @@ export function HabitHeatmap({
     const cursor = new Date(alignedStart);
 
     while (cursor <= today) {
-      const iso = cursor.toISOString().split("T")[0];
+      const iso = getLocalDateIso(cursor);
       const existing = mapByDate.get(iso);
       const item: HabitHeatmapDay = existing || {
         date: iso,

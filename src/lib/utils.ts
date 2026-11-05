@@ -60,3 +60,14 @@ export function formatDurationSeconds(seconds: number): string {
   }
   return `${minutes} min`;
 }
+
+/**
+ * Retorna a data local (no fuso do usuário/navegador) no formato YYYY-MM-DD.
+ * Evita o bug de fuso horário onde .toISOString() converte para UTC e avança o dia após as 21:00 (no fuso UTC-3 de Brasília).
+ */
+export function getLocalDateIso(d: Date = new Date()): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}

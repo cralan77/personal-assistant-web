@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialEntry } from "@/types";
 import { financeService } from "@/lib/api/services";
-import { formatCurrencyBRL, formatDateBR } from "@/lib/utils";
+import { formatCurrencyBRL, formatDateBR, getLocalDateIso } from "@/lib/utils";
 import {
   CheckCircle2,
   Clock,
@@ -50,7 +50,7 @@ export function EntryDetailModal({
     if (entry) {
       setValue("name", entry.name);
       setValue("value", entry.amount);
-      setValue("dueDate", entry.dueDate || new Date().toISOString().split("T")[0]);
+      setValue("dueDate", entry.dueDate || getLocalDateIso());
       setIsEditing(false);
       setErrorMessage(null);
     }

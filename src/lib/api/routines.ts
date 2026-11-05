@@ -1,4 +1,5 @@
 import { apiClient } from "./client";
+import { getLocalDateIso } from "@/lib/utils";
 import {
   CheckHabitPayload,
   CreateHabitPayload,
@@ -143,7 +144,7 @@ export async function checkHabit(
   id: string,
   payload?: CheckHabitPayload
 ): Promise<any> {
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateIso();
   const { data } = await apiClient.post(`/api/proxy/habits/${id}/check`, {
     date: payload?.date || today,
     value: payload?.value ?? 1.0,
@@ -153,7 +154,7 @@ export async function checkHabit(
 }
 
 export async function uncheckHabit(id: string, date?: string): Promise<void> {
-  const targetDate = date || new Date().toISOString().split("T")[0];
+  const targetDate = date || getLocalDateIso();
   await apiClient.delete(`/api/proxy/habits/${id}/check?date=${targetDate}`);
 }
 
@@ -161,7 +162,7 @@ export async function skipHabit(
   id: string,
   payload?: SkipHabitPayload
 ): Promise<any> {
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateIso();
   const { data } = await apiClient.post(`/api/proxy/habits/${id}/skip`, {
     date: payload?.date || today,
     skipCount: payload?.skipCount ?? 1,
@@ -171,12 +172,12 @@ export async function skipHabit(
 }
 
 export async function unskipHabit(id: string, date?: string): Promise<void> {
-  const targetDate = date || new Date().toISOString().split("T")[0];
+  const targetDate = date || getLocalDateIso();
   await apiClient.delete(`/api/proxy/habits/${id}/skip?date=${targetDate}`);
 }
 
 export async function syncHealthHabits(date?: string): Promise<any> {
-  const targetDate = date || new Date().toISOString().split("T")[0];
+  const targetDate = date || getLocalDateIso();
   const { data } = await apiClient.post(
     `/api/proxy/habits/sync-health?date=${targetDate}`,
     { date: targetDate }
@@ -326,7 +327,7 @@ export async function deleteSubtask(
 // ==========================================
 
 export async function getDailyRoutine(date?: string): Promise<DailyRoutineView> {
-  const targetDate = date || new Date().toISOString().split("T")[0];
+  const targetDate = date || getLocalDateIso();
   const { data } = await apiClient.get<any>(
     `/api/proxy/routines/daily?date=${targetDate}`
   );
@@ -369,7 +370,7 @@ export async function getAnalyticsComparison(
   period: "WEEK" | "MONTH" = "WEEK",
   referenceDate?: string
 ): Promise<RoutineAnalyticsComparison> {
-  const targetDate = referenceDate || new Date().toISOString().split("T")[0];
+  const targetDate = referenceDate || getLocalDateIso();
   const { data } = await apiClient.get<RoutineAnalyticsComparison>(
     `/api/proxy/routines/analytics/comparison?period=${period}&referenceDate=${targetDate}`
   );
@@ -419,10 +420,15 @@ export async function getHabitHeatmap(
   };
 }
 
-export async function getRoutineSummary(): Promise<RoutineSummary> {
-  const { data } = await apiClient.get<any>("/api/proxy/routines/summary");
+export async function getRoutineSummary(
+  date?: string
+): Promise<RoutineSummary> {
+  const targetDate = date || getLocalDateIso();
+  const { data } = await apiClient.get<any>(
+    `/api/proxy/routines/summary?date=${targetDate}`
+  );
   return {
-    date: data?.date || new Date().toISOString().split("T")[0],
+    date: data?.date || targetDate,
     fixedExpectedToday: Number(
       data?.fixedExpectedToday ?? data?.fixedExpectedCount ?? 0
     ),
